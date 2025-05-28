@@ -9,7 +9,6 @@ import * as MetabaseError from "embedding-sdk/errors";
 import { getIsLocalhost } from "embedding-sdk/lib/is-localhost";
 import { isSdkVersionCompatibleWithMetabaseVersion } from "embedding-sdk/lib/version-utils";
 import type { SdkStoreState } from "embedding-sdk/store/types";
-import type { MetabaseAuthMethod } from "embedding-sdk/types";
 import api from "metabase/lib/api";
 import { createAsyncThunk } from "metabase/lib/redux";
 import { refreshSiteSettings } from "metabase/redux/settings";
@@ -17,6 +16,7 @@ import { refreshCurrentUser } from "metabase/redux/user";
 import type { Settings } from "metabase-types/api";
 
 import {
+  connectToInstanceAuthSso,
   jwtDefaultRefreshTokenFunction,
   openSamlLoginPopup,
   samlTokenStorage,
@@ -158,10 +158,10 @@ const getRefreshToken = async ({
   MetabaseAuthConfig,
   "metabaseInstanceUrl" | "fetchRequestToken" | "authMethod"
 >) => {
-  const urlResponseJson = await connectToInstanceAuthSso(
-    metabaseInstanceUrl,
+  const urlResponseJson = await connectToInstanceAuthSso(metabaseInstanceUrl, {
     authMethod,
-  );
+    headers: getSdkRequestHeaders(),
+  });
   const { method, url: responseUrl, hash } = urlResponseJson || {};
   if (method === "saml") {
     return await openSamlLoginPopup(responseUrl);
@@ -186,52 +186,13 @@ const sessionSchema = Yup.object({
   // as we don't use them, so we don't throw an error if they are missing
 });
 
-async function connectToInstanceAuthSso(
-  url: string,
-  authMethod?: MetabaseAuthMethod,
-) {
-  if (authMethod && authMethod !== "jwt" && authMethod !== "saml") {
-    throw MetabaseError.INVALID_AUTH_METHOD({
-      method: authMethod,
-    });
-  }
-
-  const ssoUrl = new URL("/auth/sso", url);
-
-  if (authMethod) {
-    ssoUrl.searchParams.set("preferred_method", authMethod);
-  }
-
-  try {
-    const urlResponse = await fetch(ssoUrl, getSdkRequestHeaders());
-    if (!urlResponse.ok) {
-      throw MetabaseError.CANNOT_CONNECT_TO_INSTANCE({
-        instanceUrl: url,
-        status: urlResponse.status,
-      });
-    }
-    return await urlResponse.json();
-  } catch (e) {
-    // If the error is already a MetabaseError, just rethrow
-    if (e instanceof MetabaseError.MetabaseError) {
-      throw e;
-    }
-    throw MetabaseError.CANNOT_CONNECT_TO_INSTANCE({
-      instanceUrl: url,
-      status: (e as any)?.status,
-    });
-  }
-}
-
-export function getSdkRequestHeaders(hash?: string) {
+export function getSdkRequestHeaders(hash?: string): Record<string, string> {
   return {
-    headers: {
-      // eslint-disable-next-line no-literal-metabase-strings -- header name
-      "X-Metabase-Client": "embedding-sdk-react",
-      // eslint-disable-next-line no-literal-metabase-strings -- header name
-      "X-Metabase-Client-Version": getEmbeddingSdkVersion(),
-      // eslint-disable-next-line no-literal-metabase-strings -- header name
-      ...(hash && { "X-Metabase-SDK-JWT-Hash": hash }),
-    },
+    // eslint-disable-next-line no-literal-metabase-strings -- header name
+    "X-Metabase-Client": "embedding-sdk-react",
+    // eslint-disable-next-line no-literal-metabase-strings -- header name
+    "X-Metabase-Client-Version": getEmbeddingSdkVersion(),
+    // eslint-disable-next-line no-literal-metabase-strings -- header name
+    ...(hash && { "X-Metabase-SDK-JWT-Hash": hash }),
   };
 }
