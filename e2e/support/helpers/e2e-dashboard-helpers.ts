@@ -375,7 +375,9 @@ export function getTextCardDetails({
   size_y = 6,
   text = "Text card",
   ...cardDetails
-}: Partial<VirtualDashboardCard> = {}): Partial<VirtualDashboardCard> {
+}: Partial<VirtualDashboardCard> & {
+  text?: string;
+} = {}): Partial<VirtualDashboardCard> {
   return {
     id,
     card_id: null,
@@ -417,7 +419,9 @@ export function getHeadingCardDetails({
   size_y = 1,
   text = "Heading text details",
   ...cardDetails
-}: Partial<VirtualDashboardCard> = {}): Partial<VirtualDashboardCard> {
+}: Partial<VirtualDashboardCard> & {
+  text?: string;
+} = {}): Partial<VirtualDashboardCard> {
   return {
     id,
     card_id: null,
