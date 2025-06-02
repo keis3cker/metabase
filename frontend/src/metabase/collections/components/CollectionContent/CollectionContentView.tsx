@@ -44,7 +44,7 @@ import type { State } from "metabase-types/store";
 
 import type { CollectionOrTableIdProps } from "../ModelUploadModal";
 import { ModelUploadModal } from "../ModelUploadModal";
-import UploadOverlay from "../UploadOverlay";
+import { UploadOverlay } from "../UploadOverlay";
 
 import { CollectionMain, CollectionRoot } from "./CollectionContent.styled";
 import { CollectionItemsTable } from "./CollectionItemsTable";
