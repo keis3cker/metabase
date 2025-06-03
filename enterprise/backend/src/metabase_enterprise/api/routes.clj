@@ -17,6 +17,7 @@
    [metabase-enterprise.content-verification.api.routes]
    [metabase-enterprise.data-editing.api]
    [metabase-enterprise.database-routing.api]
+   [metabase-enterprise.embed.content-translation.api]
    [metabase-enterprise.gsheets.api :as gsheets.api]
    [metabase-enterprise.llm.api]
    [metabase-enterprise.metabot-v3.api]
@@ -81,13 +82,14 @@
    "/billing"                    metabase-enterprise.billing.api.routes/routes
    "/content-translation"        (premium-handler metabase-enterprise.content-translation.routes/routes :content-translation)
    "/data-editing"               (premium-handler metabase-enterprise.data-editing.api/routes :table-data-editing)
+   "/database-routing"           (premium-handler metabase-enterprise.database-routing.api/routes :database-routing)
+   "/embed/content-translation"  (premium-handler metabase-enterprise.embed.content-translation.api/routes :content-translation)
    "/gsheets"                    (-> gsheets.api/routes ;; gsheets requires both features.
                                      (premium-handler :attached-dwh)
                                      (premium-handler :etl-connections))
-   "/database-routing"           (premium-handler metabase-enterprise.database-routing.api/routes :database-routing)
    "/logs"                       (premium-handler 'metabase-enterprise.advanced-config.api.logs :audit-app)
-   "/metabot-v3"                 (premium-handler metabase-enterprise.metabot-v3.api/routes :metabot-v3)
    "/metabot-tools"              metabase-enterprise.metabot-v3.tools.api/routes
+   "/metabot-v3"                 (premium-handler metabase-enterprise.metabot-v3.api/routes :metabot-v3)
    "/query-reference-validation" (premium-handler metabase-enterprise.query-reference-validation.api/routes :query-reference-validation)
    "/scim"                       (premium-handler metabase-enterprise.scim.routes/routes :scim)
    "/serialization"              (premium-handler metabase-enterprise.serialization.api/routes :serialization)
