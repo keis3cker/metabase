@@ -1,10 +1,8 @@
 import { type Action, useKBar, useRegisterActions } from "kbar";
 import { useMemo } from "react";
-import { useMount } from "react-use";
 
 import { getSections } from "metabase/admin/settings/selectors";
-import { initializeSettings } from "metabase/admin/settings/settings";
-import { useDispatch, useSelector } from "metabase/lib/redux";
+import { useSelector } from "metabase/lib/redux";
 
 type AdminSetting = {
   key: string;
@@ -19,12 +17,6 @@ type AdminSection = {
 };
 
 export const SettingsCommandPaletteActions = () => {
-  const dispatch = useDispatch();
-
-  useMount(() => {
-    dispatch(initializeSettings());
-  });
-
   const sections = useSelector<Record<string, AdminSection>>((state) =>
     getSections(state),
   );

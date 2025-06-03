@@ -354,7 +354,11 @@ export const getSections = createSelector(
   },
 );
 
-export const getActiveSectionName = (state, props) => props.params.splat;
+export const getActiveSectionName = (state, props) => {
+  return (
+    props.location.pathname.match(/\/admin\/settings\/(.+)/)?.[1] ?? "general"
+  );
+};
 
 export const getActiveSection = createSelector(
   getActiveSectionName,
