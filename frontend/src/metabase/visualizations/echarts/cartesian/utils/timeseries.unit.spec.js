@@ -9,7 +9,7 @@ dayjs.extend(timezone);
 import { NumberColumn, StringColumn } from "__support__/visualizations";
 import { getVisualizationTransformed } from "metabase/visualizations";
 import {
-  computeTimeseriesDataInverval,
+  computeTimeseriesDataInterval,
   computeTimeseriesTicksInterval,
   getTimezoneOrOffset,
   normalizeDate,
@@ -99,7 +99,7 @@ describe("visualization.lib.timeseries", () => {
 
     TEST_CASES.map(([expectedUnit, expectedCount, data]) => {
       it(`should return ${expectedCount} ${expectedUnit}`, () => {
-        const { unit, count } = computeTimeseriesDataInverval(
+        const { unit, count } = computeTimeseriesDataInterval(
           data.map((d) => new Date(d)),
         );
         expect(unit).toBe(expectedUnit);
@@ -111,7 +111,7 @@ describe("visualization.lib.timeseries", () => {
 
     units.forEach((testUnit) => {
       it(`should return one ${testUnit} when ${testUnit} interval is set`, () => {
-        const { unit, count } = computeTimeseriesDataInverval(
+        const { unit, count } = computeTimeseriesDataInterval(
           [
             new Date("2019-01-01").toISOString(),
             new Date("2020-01-01").toISOString(),
@@ -124,7 +124,7 @@ describe("visualization.lib.timeseries", () => {
     });
 
     it("should return 1 quarter for quarter interval", () => {
-      const { unit, count } = computeTimeseriesDataInverval(
+      const { unit, count } = computeTimeseriesDataInterval(
         [
           new Date("2019-01-01").toISOString(),
           new Date("2020-01-01").toISOString(),
@@ -136,7 +136,7 @@ describe("visualization.lib.timeseries", () => {
     });
 
     it("should should ignore null X values", () => {
-      const { unit, count } = computeTimeseriesDataInverval([
+      const { unit, count } = computeTimeseriesDataInterval([
         null,
         new Date("2020-01-01").toISOString(),
         null,

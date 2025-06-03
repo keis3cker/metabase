@@ -37,7 +37,7 @@ import type {
   YAxisModel,
 } from "metabase/visualizations/echarts/cartesian/model/types";
 import {
-  computeTimeseriesDataInverval,
+  computeTimeseriesDataInterval,
   getTimeSeriesIntervalDuration,
   getTimezoneOrOffset,
   minTimeseriesUnit,
@@ -923,7 +923,7 @@ function getTimeSeriesXAxisInfo(
     rawSeries,
     showWarning,
   );
-  const interval = computeTimeseriesDataInverval(xValues, unit) ?? DAY_INTERVAL;
+  const interval = computeTimeseriesDataInterval(xValues, unit) ?? DAY_INTERVAL;
 
   const range = getXAxisDateRangeFromSortedXAxisValues(xValues);
 

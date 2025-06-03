@@ -1,10 +1,10 @@
 import moment from "moment-timezone"; // eslint-disable-line no-restricted-imports -- deprecated usage
 
 import testAcrossTimezones from "__support__/timezones";
-import { computeTimeseriesDataInverval } from "metabase/visualizations/echarts/cartesian/utils/timeseries";
+import { computeTimeseriesDataInterval } from "metabase/visualizations/echarts/cartesian/utils/timeseries";
 
 testAcrossTimezones((reportTz) => {
-  computeTimeseriesDataInverval;
+  computeTimeseriesDataInterval;
 
   describe("computeTimeseriesDataInvervalIndex", () => {
     [
@@ -19,7 +19,7 @@ testAcrossTimezones((reportTz) => {
         // parse timestamps in reporting timezone and serialize
         const xValues = data.map((d) => moment.tz(d, reportTz).format());
 
-        const { unit, count } = computeTimeseriesDataInverval(xValues);
+        const { unit, count } = computeTimeseriesDataInterval(xValues);
 
         expect(unit).toBe(expectedUnit);
         expect(count).toBe(expectedCount);
