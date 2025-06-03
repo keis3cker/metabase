@@ -1,0 +1,6 @@
+.dragOverlay {
+  z-index: 1;
+  transition: opacity 0.2s;
+  border-radius: var(--default-border-radius);
+  pointer-events: none;
+}
