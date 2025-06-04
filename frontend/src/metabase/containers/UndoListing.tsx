@@ -1,6 +1,5 @@
 import {
   type CSSProperties,
-  Fragment,
   type ReactNode,
   useEffect,
   useLayoutEffect,
@@ -170,7 +169,10 @@ document.body.appendChild(target);
 
 // The react transition group state transitions are flaky in cypress
 // so disable them for altogether.
-const Group = "Cypress" in window ? Fragment : TransitionGroup;
+const Group =
+  "Cypress" in window
+    ? (props: { children: React.ReactNode }) => <>{props.children}</>
+    : TransitionGroup;
 const Item =
   "Cypress" in window
     ? function MockItem({

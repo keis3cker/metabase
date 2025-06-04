@@ -54,7 +54,7 @@ export const EChartsRenderer = forwardRef<HTMLDivElement, EChartsRendererProps>(
       setIsRendering(true);
 
       const cb = () => {
-        setTimeout(() => setIsRendering(false), 500);
+        setTimeout(() => setIsRendering(false), 2000);
         chartRef.current?.off("finished", cb);
       };
 
