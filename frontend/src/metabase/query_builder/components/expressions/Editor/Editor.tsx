@@ -239,7 +239,7 @@ function useExpression({
   const errorRef = useRef<ExpressionError | null>(null);
 
   const formatExpression = useCallback(
-    async ({ initial = false }: { initial?: boolean }) => {
+    ({ initial = false }: { initial?: boolean }) => {
       function done(source: string) {
         setIsFormatting(false);
         setSource(source);
@@ -253,7 +253,7 @@ function useExpression({
         return;
       }
 
-      await format(clause, {
+      format(clause, {
         query,
         stageIndex,
         expressionIndex,
