@@ -1,7 +1,7 @@
 import type { EChartsCoreOption, EChartsType } from "echarts/core";
 import { init } from "echarts/core";
 import mergeRefs from "merge-refs";
-import { forwardRef, useEffect, useRef } from "react";
+import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { useMount, useUnmount, useUpdateEffect } from "react-use";
 
 import { registerEChartsModules } from "metabase/visualizations/echarts";
@@ -40,6 +40,27 @@ export const EChartsRenderer = forwardRef<HTMLDivElement, EChartsRendererProps>(
     const chartElemRef = useRef<HTMLDivElement>(null);
     const chartRef = useRef<EChartsType>();
 
+    const [isRendering, setIsRendering] = useState(false);
+
+    const waitForRendering = useCallback(() => {
+      if (isRendering) {
+        return;
+      }
+
+      if (!chartRef.current || chartRef.current.isDisposed()) {
+        return;
+      }
+
+      setIsRendering(true);
+
+      const cb = () => {
+        requestAnimationFrame(() => setIsRendering(false));
+        chartRef.current?.off("finished", cb);
+      };
+
+      chartRef.current?.on("finished", cb);
+    }, [isRendering]);
+
     useMount(() => {
       chartRef.current = init(chartElemRef.current, null, {
         width,
@@ -47,6 +68,7 @@ export const EChartsRenderer = forwardRef<HTMLDivElement, EChartsRendererProps>(
         renderer: "svg",
       });
 
+      waitForRendering();
       chartRef.current?.setOption(option, notMerge);
       onInit?.(chartRef.current);
     });
@@ -56,6 +78,7 @@ export const EChartsRenderer = forwardRef<HTMLDivElement, EChartsRendererProps>(
     });
 
     useUpdateEffect(() => {
+      waitForRendering();
       chartRef.current?.setOption(option, notMerge);
     }, [option]);
 
@@ -100,10 +123,13 @@ export const EChartsRenderer = forwardRef<HTMLDivElement, EChartsRendererProps>(
     }, [zrEventHandlers]);
 
     return (
-      <EChartsRendererRoot
-        data-testid="chart-container"
-        ref={mergeRefs<HTMLDivElement>(chartElemRef, ref)}
-      />
+      <>
+        <EChartsRendererRoot
+          data-testid="chart-container"
+          ref={mergeRefs<HTMLDivElement>(chartElemRef, ref)}
+        />
+        {isRendering ? <div data-testid="echarts-rendering" /> : null}
+      </>
     );
   },
 );
