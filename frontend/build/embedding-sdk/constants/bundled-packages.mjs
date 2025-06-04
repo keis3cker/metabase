@@ -1,6 +1,4 @@
 export const BUNDLED_PACKAGES = [
-  "classnames",
-
   // We have to bundle to force the proper logic based on the `NODE_ENV: "production"`
   "icepick",
 
@@ -18,7 +16,7 @@ export const BUNDLED_PACKAGES = [
   // Has errors during rollup treeshaking
   "iframe-resizer",
 
-  // these I want recheck
+  // Used also in CLJS code. There are runtime errors if defined as externals
   "crc-32",
   "ttag",
 ];
