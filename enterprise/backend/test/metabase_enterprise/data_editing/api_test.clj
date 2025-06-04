@@ -32,7 +32,8 @@
 (use-fixtures :each
   (fn [f]
     (mt/with-dynamic-fn-redefs [data-editing.api/require-authz? (constantly true)]
-      (f))))
+      (f)))
+  #'data-editing.tu/restore-appdb-settings-fixture)
 
 (deftest feature-flag-required-test
   (mt/with-premium-features #{}

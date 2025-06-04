@@ -42,9 +42,21 @@
   [token]
   (format "ee/data-editing-public/webhook/%s/data" token))
 
+(def ^:private ^:dynamic *initial-app-db-settings* nil)
+
+(defn restore-appdb-settings-fixture [f]
+  (binding [*initial-app-db-settings* :untouched]
+    (try
+      (f)
+      (finally
+        (when-not (= :untouched *initial-app-db-settings*)
+          (t2/update! :model/Database (mt/id) {:settings *initial-app-db-settings*}))))))
+
 (defn alter-appdb-settings! [f & args]
   (let [id           (mt/id)
         settings     (t2/select-one-fn :settings :model/Database id)
+        ;; save initial settings so the restore-appdb-settings-fixture can restore them
+        _            (when (= :untouched *initial-app-db-settings*) (set! *initial-app-db-settings* settings))
         new-settings (apply f settings args)]
     (t2/update! :model/Database id {:settings new-settings})))
 
