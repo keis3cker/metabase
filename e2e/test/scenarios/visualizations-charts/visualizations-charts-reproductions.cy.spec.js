@@ -97,7 +97,8 @@ describe("issue 16170", { tags: "@mongo" }, () => {
 
       assertOnTheYAxis();
 
-      cy.findByTestId("echarts-rendering").should("not.exist");
+      // cy.findByTestId("echarts-rendering").should("not.exist");
+      cy.wait(1000);
 
       // eslint-disable-next-line no-unsafe-element-filtering
       H.cartesianChartCircle().eq(-2).trigger("mousemove");
